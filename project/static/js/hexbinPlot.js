@@ -1,10 +1,74 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const margin = { top: 7, right: 15, bottom: 33, left: 50 };
 
     fetch('/hexbin_plot')
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            // set the dimensions and margins of the graph
+            var margin = { top: 10, right: 30, bottom: 30, left: 40 },
+                width = 460 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
+
+            // append the svg object to the body of the page
+            var svg = d3.select("#hexbinPlot")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform",
+                    "translate(" + margin.left + "," + margin.top + ")");
+
+            var xExtent = d3.extent(data, function (d) { return d.Year; });
+            var yExtent = d3.extent(data, function (d) { return d['Eclipse Magnitude']; });
+
+            // Add X axis
+            var x = d3.scaleLinear()
+                .domain(xExtent)
+                .range([0, width]);
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x));
+
+            // Add Y axis
+            var y = d3.scaleLinear()
+                .domain(yExtent)
+                .range([height, 0]);
+            svg.append("g")
+                .call(d3.axisLeft(y));
+
+            // Reformat the data: d3.hexbin() needs a specific format
+            var inputForHexbinFun = []
+            data.forEach(function (d) {
+                inputForHexbinFun.push([x(d['Year']), y(d['Eclipse Magnitude'])])  // Note that we had the transform value of X and Y !
+            })
+
+            // Prepare a color palette
+            var color = d3.scaleLinear()
+                .domain([0, 50]) // Number of points in the bin?
+                .range(["transparent", "#69b3a2"])
+
+            // Compute the hexbin data
+            var hexbin = d3.hexbin()
+                .radius(9) // size of the bin in px
+                .extent([[0, 0], [width, height]])
+
+            // Plot the hexbins
+            svg.append("clipPath")
+                .attr("id", "clip")
+                .append("rect")
+                .attr("width", width)
+                .attr("height", height)
+
+            svg.append("g")
+                .attr("clip-path", "url(#clip)")
+                .selectAll("path")
+                .data(hexbin(inputForHexbinFun))
+                .enter().append("path")
+                .attr("d", hexbin.hexagon())
+                .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+                .attr("fill", function (d) { return color(d.length); })
+                .attr("stroke", "black")
+                .attr("stroke-width", "0.1")
+
         }).catch(error => console.error('Error:', error));
 
 });

@@ -1,74 +1,93 @@
 document.addEventListener('DOMContentLoaded', function () {
-
     fetch('/hexbin_plot')
         .then(response => response.json())
         .then(data => {
-            // set the dimensions and margins of the graph
+            // Populate dropdown menus with data columns
+            var allVariables = Object.keys(data[0]);
+            var selectX = d3.select('#xAxisSelect');
+            var selectY = d3.select('#yAxisSelect');
+
+            allVariables.forEach(function (key) {
+                selectX.append('option').text(key).attr('value', key);
+                selectY.append('option').text(key).attr('value', key);
+            });
+
+            // Set the dimensions and margins of the graph
             var margin = { top: 10, right: 30, bottom: 30, left: 40 },
                 width = 460 - margin.left - margin.right,
                 height = 400 - margin.top - margin.bottom;
 
-            // append the svg object to the body of the page
-            var svg = d3.select("#hexbinPlot")
-                .append("svg")
+            var svg = d3.select("#hexbinPlot").append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
+                .style("background-color", "#333") 
                 .append("g")
                 .attr("transform",
                     "translate(" + margin.left + "," + margin.top + ")");
 
-            var xExtent = d3.extent(data, function (d) { return d.Year; });
-            var yExtent = d3.extent(data, function (d) { return d['Eclipse Magnitude']; });
+            function updatePlot() {
+                // Remove previous plot
+                svg.selectAll('*').remove();
 
-            // Add X axis
-            var x = d3.scaleLinear()
-                .domain(xExtent)
-                .range([0, width]);
-            svg.append("g")
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x));
+                // Get selected options and bin count
+                var selectedX = selectX.property('value');
+                var selectedY = selectY.property('value');
+                var bins = parseInt(document.getElementById('binCount').value);
 
-            // Add Y axis
-            var y = d3.scaleLinear()
-                .domain(yExtent)
-                .range([height, 0]);
-            svg.append("g")
-                .call(d3.axisLeft(y));
+                var x = d3.scaleLinear()
+                    .domain(d3.extent(data, function (d) { return +d[selectedX]; }))
+                    .range([0, width]);
 
-            // Reformat the data: d3.hexbin() needs a specific format
-            var inputForHexbinFun = []
-            data.forEach(function (d) {
-                inputForHexbinFun.push([x(d['Year']), y(d['Eclipse Magnitude'])])  // Note that we had the transform value of X and Y !
-            })
+                var y = d3.scaleLinear()
+                    .domain(d3.extent(data, function (d) { return +d[selectedY]; }))
+                    .range([height, 0]);
 
-            // Prepare a color palette
-            var color = d3.scaleLinear()
-                .domain([0, 50]) // Number of points in the bin?
-                .range(["transparent", "#69b3a2"])
+                svg.append("g")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(d3.axisBottom(x))
+                    .style("color", "white");
 
-            // Compute the hexbin data
-            var hexbin = d3.hexbin()
-                .radius(9) // size of the bin in px
-                .extent([[0, 0], [width, height]])
+                svg.append("g")
+                    .call(d3.axisLeft(y))
+                    .style("color", "white");
 
-            // Plot the hexbins
-            svg.append("clipPath")
-                .attr("id", "clip")
-                .append("rect")
-                .attr("width", width)
-                .attr("height", height)
+                var inputForHexbinFun = data.map(function (d) {
+                    return [x(+d[selectedX]), y(+d[selectedY])];
+                });
 
-            svg.append("g")
-                .attr("clip-path", "url(#clip)")
-                .selectAll("path")
-                .data(hexbin(inputForHexbinFun))
-                .enter().append("path")
-                .attr("d", hexbin.hexagon())
-                .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-                .attr("fill", function (d) { return color(d.length); })
-                .attr("stroke", "black")
-                .attr("stroke-width", "0.1")
+                var color = d3.scaleLinear()
+                    .domain([0, bins]) // Update this based on actual data density if necessary
+                    .range(["transparent", "#69b3a2"]);
 
-        }).catch(error => console.error('Error:', error));
+                var hexbin = d3.hexbin()
+                    .radius(9) // Using the number of bins input for radius size
+                    .extent([[0, 0], [width, height]]);
 
+                svg.append("clipPath")
+                    .attr("id", "clip")
+                    .append("rect")
+                    .attr("width", width)
+                    .attr("height", height);
+
+                svg.append("g")
+                    .attr("clip-path", "url(#clip)")
+                    .selectAll("path")
+                    .data(hexbin(inputForHexbinFun))
+                    .enter().append("path")
+                    .attr("d", hexbin.hexagon())
+                    .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+                    .attr("fill", function (d) { return color(d.length); })
+                    .attr("stroke", "white")
+                    .attr("stroke-width", "0.1");
+            }
+
+            // Initial plot
+            updatePlot();
+
+            // Event listeners for dropdown changes
+            selectX.on("change", updatePlot);
+            selectY.on("change", updatePlot);
+            d3.select('#binCount').on("input", updatePlot);
+        })
+        .catch(error => console.error('Error:', error));
 });

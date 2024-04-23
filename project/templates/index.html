@@ -21,17 +21,29 @@
         </div>
 
 
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-md-7 dashboardElement">
                 <div class="border graph-container1 hexbin_plot">
                     <div id="hexbinPlot"></div>
                 </div>
             </div>
+        </div> -->
+
+        <div class="row">
+            <div class="col-md-6 dashboardElement">
+                <div class="border graph-container1 chloropleth_plot">
+                    <div id="chloroplethPlot"></div> 
+
+                </div>
+            </div>
         </div> 
+        
 
     </div>
 
     <script src="{{ url_for('static', filename='js/hexbinPlot.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chloropleth.js') }}"></script>
+
 
 </body>
 </html>

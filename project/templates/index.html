@@ -9,7 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
 </head>
 <body>
 
@@ -20,6 +21,30 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-12 dashboardElement">
+                <div class="form-row align-items-center">
+                    <div class="col-auto my-1">
+                        <label class="mr-sm-2" for="xAxisSelect">Select X-axis Variable:</label>
+                        <select class="custom-select mr-sm-2" id="xAxisSelect">
+                            <option selected>Choose...</option>
+                            <!-- Options will be populated here by D3.js -->
+                        </select>
+                    </div>
+                    <div class="col-auto my-1">
+                        <label class="mr-sm-2" for="yAxisSelect">Select Y-axis Variable:</label>
+                        <select class="custom-select mr-sm-2" id="yAxisSelect">
+                            <option selected>Choose...</option>
+                            <!-- Options will be populated here by D3.js -->
+                        </select>
+                    </div>
+                    <div class="col-auto my-1">
+                        <label class="mr-sm-2" for="binCount">Number of Bins:</label>
+                        <input type="number" class="form-control" id="binCount" value="25" step="10">
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-md-7 dashboardElement">
@@ -27,7 +52,7 @@
                     <div id="hexbinPlot"></div>
                 </div>
             </div>
-        </div> 
+        </div>
 
     </div>
 

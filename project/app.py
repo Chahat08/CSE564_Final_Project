@@ -14,7 +14,7 @@ def index():
 
 @app.route('/hexbin_plot')
 def hexbin_plot():
-    return jsonify({"data": "hexbin data"})
+    return "hi"
 
 @app.route('/chloropleth')
 def chloropleth():

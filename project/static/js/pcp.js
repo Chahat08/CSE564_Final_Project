@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
                 .style("background-color", "#333"); // Dark background color
 
-            let variables = ["Decade", "Gamma", "Eclipse Interval", "Eclipse Latitude", "Eclipse Longitude"];
+            let variables = ["Decade", "ESC Wide-Scale Moving Average", "Eclipse Interval", "EII", "Localized ESC"];
             const y = {};
             variables.forEach(variable => {
                 y[variable] = d3.scaleLinear()
@@ -43,13 +43,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 }));
             }
 
+            const colorScale = d3.scaleOrdinal()
+                .domain(["A", "T", "H"])
+                .range(["#ff7f0e", "#d62728", "#bcbd22"]);
+
             svg.selectAll("myPath")
                 .data(data)
                 .enter().append("path")
                 .attr("d", d => path(d))
                 .attr("class", "line")
                 .style("fill", "none")
-                .style("stroke", "#ccc") // Light gray lines
+                .style("stroke", d => {
+                    // Apply color based on the "Type" field
+                    if (d["Eclipse Type"].includes("A")) return colorScale("A");
+                    if (d["Eclipse Type"].includes("T")) return colorScale("T");
+                    if (d["Eclipse Type"].includes("H")) return colorScale("H");
+                    return "#ccc";  // Default color if none of the types match
+                }) // Light gray lines
                 .style("opacity", 0.8);
 
             const axis = svg.selectAll(".axis")

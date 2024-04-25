@@ -14,7 +14,11 @@ def index():
 
 @app.route('/hexbin_plot')
 def hexbin_plot():
-    return "hi"
+    return jsonify(data.to_dict(orient='records'))   
+
+@app.route('/pcp')
+def pcp():
+    return jsonify(data.to_dict(orient='records'))
 
 @app.route('/chloropleth')
 def chloropleth():

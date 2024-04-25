@@ -11,4 +11,53 @@
 #chloroplethPlot svg {
     width: 100%;
     height: 100%;
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Roboto Mono', monospace;
+    background-color: #000000; /*#121212;*/
+    color: #fff;  
+}
+
+.dashboard-container {
+    padding: 20px;
+}
+
+.heading-col {
+    margin-bottom: 20px;
+}
+
+.custom-select {
+    background-color: #555;  
+    color: white;  
+    border: 1px solid #777;
+}
+
+.custom-select:focus {
+    border-color: #aaa;
+    box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.25);
+}
+
+.form-control {
+    background-color: #555;   
+    color: white;  
+    border: 1px solid #777;
+}
+
+.form-control:focus {
+    border-color: #aaa;
+    box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.25);
+}
+ 
+.axis line,
+.axis path {
+    fill: none;
+    stroke: #ccc; 
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: 'Roboto Mono', monospace;
+    color: #ddd;  
 }

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var svg = d3.select("#hexbinPlot").append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
-                .style("background-color", "#333") 
+                //.style("background-color", "#333") 
                 .append("g")
                 .attr("transform",
                     "translate(" + margin.left + "," + margin.top + ")");
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 var color = d3.scaleLinear()
                     .domain([0, bins]) // Update this based on actual data density if necessary
-                    .range(["transparent", "#69b3a2"]);
+                    .range(["transparent", "#ff7f0e"]);
 
                 var hexbin = d3.hexbin()
                     .radius(9) // Using the number of bins input for radius size

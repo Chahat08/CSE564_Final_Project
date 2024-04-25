@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
 
     fetch('/chloropleth')
@@ -43,7 +42,7 @@ function drawChloropleth(geodata) {
 
     function highlight(obj){
         d3.select(obj)
-        .style("stroke","red")
+        .style("stroke","white")
         .style("stroke-width",1.5);
     }
     function unhighlight(obj){
@@ -82,7 +81,6 @@ function drawChloropleth(geodata) {
 
     // Load the GeoJSON file
     d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(function (world) {
-
 
 
         // Merge GeoJSON features with the geodata JSON object
@@ -125,7 +123,7 @@ function drawChloropleth(geodata) {
                     d.selected = true;
                     highlight(this)
 
-                    //WRITE CODE : UPDATE SOME GRAPHS HERE
+                    //WRITE CODE : UPDATE GRAPHS HERE
                 }
                 else{
                     unhighlightAll();
@@ -148,49 +146,55 @@ function drawChloropleth(geodata) {
             });
 
             
-            // Add a legend for the colorscale
-const legendWidth = 200;
-const legendHeight = 20;
-const legendRectWidth = 30;
-const legendRectSpacing = (legendWidth - legendRectWidth * 6) / 5;
+        // Add a legend for the colorscale
+        const legendWidth = 150;
+        const legendHeight = 20;
+        const legendRectWidth = 25;
+        const legendRectSpacing = (legendWidth - legendRectWidth * 6) / 5;
 
-const legend = svg.append("g")
-    .attr("class", "legend")
-    .attr("transform", "translate(" + (width - legendWidth) + "," + (height - 50) + ")");
+        const legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", "translate(" + (20) + "," + (height - 30) + ")");
 
-legend.selectAll("rect")
-    .data(d3.range(0, d3.max(world.features, d => d.properties.eclipses), Math.ceil(d3.max(world.features, d => d.properties.eclipses) / 6)))
-    .enter().append("rect")
-    .attr("x", (d, i) => i * (legendRectWidth + legendRectSpacing))
-    .attr("y", 0)
-    .attr("width", legendRectWidth)
-    .attr("height", legendHeight)
-    .style("fill", d => colorScale(d));
+        legend.selectAll("rect")
+            .data(d3.range(0, d3.max(world.features, d => d.properties.eclipses), Math.ceil(d3.max(world.features, d => d.properties.eclipses) / 6)))
+            .enter().append("rect")
+            .attr("x", (d, i) => i * (legendRectWidth + legendRectSpacing))
+            .attr("y", 0)
+            .attr("width", legendRectWidth)
+            .attr("height", legendHeight)
+            .style("fill", d => colorScale(d));
 
-legend.append("text")
-    .attr("class", "legend-text")
-    .attr("x", -5)
-    .attr("y", legendHeight / 2)
-    .attr("dy", "0.35em")
-    .style("text-anchor", "end")
-    .text("0");
+        legend.append("text")
+            .attr("class", "legend-text")
+            .attr("x", -5)
+            .attr("y", legendHeight / 2)
+            .attr("dy", "0.35em")
+            .style("fill", "white")
+            .style("font-size", "12px")
+            .style("text-anchor", "end")
+            .text("0");
 
-legend.append("text")
-    .attr("class", "legend-text")
-    .attr("x", legendWidth + 5)
-    .attr("y", legendHeight / 2)
-    .attr("dy", "0.35em")
-    .text(d3.max(world.features, d => d.properties.eclipses));
+        legend.append("text")
+            .attr("class", "legend-text")
+            .attr("x", legendWidth + 5)
+            .attr("y", legendHeight / 2)
+            .attr("dy", "0.35em")
+            .style("font-size", "12px")
+            .style("fill", "white")
+            .text(d3.max(world.features, d => d.properties.eclipses));
 
-legend.append("text")
-    .attr("class", "legend-title")
-    .attr("x", legendWidth / 2)
-    .attr("y", -10)
-    .attr("dy", "0.35em")
-    .style("text-anchor", "middle")
-    .text("Eclipse Frequency Legend");
+        legend.append("text")
+            .attr("class", "legend-title")
+            .attr("x", legendWidth / 2)
+            .attr("y", -10)
+            .attr("dy", "0.35em")
+            .style("font-size", "12px")
+            .style("text-anchor", "middle")
+            .style("fill", "white")
+            .text("Eclipse Frequency");
 
-    
             
-    });
-}
+                    
+            });
+        }

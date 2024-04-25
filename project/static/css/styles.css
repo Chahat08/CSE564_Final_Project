@@ -2,8 +2,8 @@ body, html {
     height: 100%;
     margin: 0;
     font-family: 'Roboto Mono', monospace;
-    background-color: #121212;  Dark background for the whole page 
-    color: #fff;  Light text color for the whole page 
+    background-color: #121212;
+    color: #fff;  
 }
 
 .dashboard-container {
@@ -14,22 +14,9 @@ body, html {
     margin-bottom: 20px;
 }
 
-.dashboardElement {
-    margin-top: 10px;
-    padding: 15px;
-    background-color: #333;  Slightly lighter dark shade for elements 
-    border-radius: 5px;
-}
-
-.graph-container1 {
-    padding: 20px;
-    background-color: #222;  Even darker shade for graph containers 
-    border: 1px solid #444;  Subtle border for the container 
-}
-
 .custom-select {
-    background-color: #555;  Dark background for dropdowns 
-    color: white;  Ensuring text is light 
+    background-color: #555;  
+    color: white;  
     border: 1px solid #777;
 }
 
@@ -39,8 +26,8 @@ body, html {
 }
 
 .form-control {
-    background-color: #555;  Dark background for input fields 
-    color: white;  Light text for input fields 
+    background-color: #555;   
+    color: white;  
     border: 1px solid #777;
 }
 
@@ -53,11 +40,11 @@ body, html {
 .axis line,
 .axis path {
     fill: none;
-    stroke: #ccc;  Light grey stroke for visibility against dark backgrounds 
+    stroke: #ccc; 
     shape-rendering: crispEdges;
 }
 
 .axis text {
     font-family: 'Roboto Mono', monospace;
-    color: #ddd;  Light grey color for text in axes 
+    color: #ddd;  
 }

@@ -27,6 +27,23 @@ def chloropleth():
         data = list(reader)
     return jsonify(data)
 
+@app.route('/donut')
+def donut_chart():
+    def categorize_eclipse_type(e_type):
+        if "H" in e_type:
+            return "Hybrid"
+        elif "A" in e_type:
+            return "Annular"
+        elif "T" in e_type:
+            return "Total"
+        return "Other"  
+   
+    data['Simplified Type'] = data['Eclipse Type'].apply(categorize_eclipse_type)
+    
+    type_counts = data['Simplified Type'].value_counts().to_dict()
+    
+    return jsonify(type_counts)
+
 if __name__ == '__main__':
     # serve(app, host='0.0.0.0', port=8080)
     app.run(debug=True)

@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const colorScale = d3.scaleOrdinal()
                 .domain(["A", "T", "H"])
-                .range(["#ff7f0e", "#d62728", "#bcbd22"]);
+                .range(["#ff7f0e", "#d62728", "#fcc203"]);
 
             svg.selectAll("myPath")
                 .data(data)
@@ -55,9 +55,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 .style("fill", "none")
                 .style("stroke", d => {
                     // Apply color based on the "Type" field
-                    if (d["Eclipse Type"].includes("A")) return colorScale("A");
-                    if (d["Eclipse Type"].includes("T")) return colorScale("T");
-                    if (d["Eclipse Type"].includes("H")) return colorScale("H");
+                    if (d["Eclipse Type"].includes("T")) return colorScale("A");
+                    if (d["Eclipse Type"].includes("H")) return colorScale("T");
+                    if (d["Eclipse Type"].includes("A")) return colorScale("H");
                     return "#ccc";  // Default color if none of the types match
                 }) // Light gray lines
                 .style("opacity", 0.8);

@@ -12,8 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
             //var height = +svg.node().getBoundingClientRect().height;
             var width = 400;
             var height = 400;
-            var innerRadius = 100,  // Adjust as needed
-                outerRadius = Math.min(width, height) / 2 - 20;  // Leave some margins
+
+            var innerRadius = 100,
+                outerRadius = Math.min(width, height) / 2 - 20;
 
             var x = d3.scaleBand()
                 .range([0, 2 * Math.PI])
@@ -23,40 +24,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 .range([innerRadius, outerRadius]);
 
             var z = d3.scaleOrdinal()
-                .range(["#ff7f0e", "#5e2f06"]);  // Colors for Daytime and Nighttime
+                .range(["#ff7f0e", "#613005"]);
 
-            x.domain(data.map(function (d) { return d['Sun Constellation']; }));
+            x.domain(data.map(d => d['Sun Constellation']));
             var maxVal = d3.max(data, d => d.Daytime + d.Nighttime);
             y.domain([0, maxVal]);
             z.domain(['Daytime', 'Nighttime']);
 
             var g = svg.append("g")
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-            // Draw circular grid lines and labels
-            var yAxis = g.append("g")
-                .attr("text-anchor", "middle");
-
-            var levels = 2; // Number of levels in the grid
-            var levelFactor = outerRadius / levels;
-
-            yAxis.selectAll('circle')
-                .data(d3.range(1, levels + 1))
-                .enter()
-                .append('circle')
-                .attr('r', d => levelFactor * d)
-                .style('fill', 'none')
-                .style('stroke', 'white')
-                .style('stroke-dasharray', '2,2');
-
-            //yAxis.selectAll('text')
-            //    .data(d3.range(1, levels + 1))
-            //    .enter()
-            //    .append('text')
-            //    .attr('y', d => -levelFactor * d)
-            //    .attr('dy', '-0.4em')
-            //    .attr('fill', 'white')
-            //    .text(d => Math.round(maxVal / levels * d));
 
             var arcs = d3.arc()
                 .innerRadius(d => y(d[0]))
@@ -77,7 +53,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 .enter().append("path")
                 .attr("d", arcs);
 
-            // Add constellation labels inside the donut hole
+            var levels = 2;
+            var levelStep = (outerRadius - innerRadius) / (levels + 1);  
+
+            var yAxis = g.append("g")
+                .attr("text-anchor", "middle");
+
+            yAxis.selectAll('circle')
+                .data(d3.range(1, levels + 1))
+                .enter()
+                .append('circle')
+                .attr('r', d => innerRadius + levelStep * d)
+                .style('fill', 'none')
+                .style('stroke', 'white')
+                .style('stroke-opacity', 0.7)
+                .style('stroke-dasharray', '2,2');
+
+            yAxis.selectAll('text')
+                .data(d3.range(1, levels + 1))
+                .enter()
+                .append('text')
+                .attr('y', d => -(innerRadius + levelStep * d))
+                .attr('dy', '-0.4em')
+                .attr('fill', 'white')
+                .style('font-size', '10px')
+                .text(d => Math.round(maxVal / levels * d));
+
             g.append("g")
                 .selectAll("text")
                 .data(data)

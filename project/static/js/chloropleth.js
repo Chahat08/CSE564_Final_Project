@@ -103,7 +103,7 @@ function drawChloropleth(geodata) {
 
         const colorScale = d3.scaleSequential()
             .domain([0, d3.max(world.features, d => d.properties.eclipses)])
-            .interpolator(d3.interpolateRgb("#feebe2", "#7a0177"));
+            .interpolator(d3.interpolateRgb("#fcc203", "#d62728"));
 
 
         // Draw the map

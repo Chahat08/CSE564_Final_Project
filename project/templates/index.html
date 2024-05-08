@@ -61,12 +61,22 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-6">
+                <div id="TimeseriesPlot"></div>
+            </div>
+            <div class="col-6">
+                <div id="donutChart"></div>
+            </div>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/hexbinPlot.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chloropleth.js') }}"></script>
     <script src="{{ url_for('static', filename='js/pcp.js') }}"></script>
     <script src="{{ url_for('static', filename='js/donut.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/timeseries.js') }}"></script>
+
 
 </body>
 </html>

@@ -6,6 +6,7 @@ import pandas as pd
 app = Flask(__name__)
 
 data = pd.read_csv("static/data/eclipse_removed.csv") 
+data2 = pd.read_csv('static/data/eclipse_data_enriched_5000_years.csv')
 geodata = pd.read_csv("static/data/geo_coded_data_clean.csv")
 
 @app.route('/')
@@ -43,6 +44,14 @@ def donut_chart():
     type_counts = data['Simplified Type'].value_counts().to_dict()
     
     return jsonify(type_counts)
+
+@app.route('/timeseries')
+def timeseries_plot():
+    
+    selected_columns = data2[["Decade", "Eclipse Magnitude"]]
+    data_dict = selected_columns.to_dict(orient="records")
+    
+    return jsonify(data_dict)
 
 if __name__ == '__main__':
     # serve(app, host='0.0.0.0', port=8080)

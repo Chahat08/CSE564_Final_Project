@@ -6,7 +6,10 @@ function drawScatterPlot(data)
 
     //console.log(data)
             // Populate dropdown menus with data columns
-            var allVariables = Object.keys(data[0]);
+            // var allVariables = Object.keys(data[0]);
+            var allVariables = ['Delta T (s)','Gamma', 'Eclipse Magnitude', 'Sun Altitude',
+            'Sun Azimuth',  'Eclipse Latitude','Eclipse Longitude', 'obliquity', 'Inter-Eclipse Duration',
+            'Visibility Score', 'Moon Distance (km)', 'Sun Distance (km)', 'Decade']
             var selectX = d3.select('#xAxisSelect');
             var selectY = d3.select('#yAxisSelect');
 

@@ -5,7 +5,7 @@ import pandas as pd
 
 app = Flask(__name__)
 
-data = pd.read_csv("static/data/eclipse_removed.csv") 
+#data = pd.read_csv("static/data/eclipse_removed.csv") 
 data2 = pd.read_csv('static/data/eclipse_data_enriched_5000_years.csv')
 geodata = pd.read_csv("static/data/geo_coded_data_clean.csv")
 
@@ -13,13 +13,13 @@ geodata = pd.read_csv("static/data/geo_coded_data_clean.csv")
 def index():
     return render_template('index.html')
 
-@app.route('/hexbin_plot')
-def hexbin_plot():
-    return jsonify(data.to_dict(orient='records'))   
+@app.route('/scatter_plot')
+def scatter_plot():
+    return jsonify(geodata.to_dict(orient='records')) 
 
 @app.route('/pcp')
 def pcp():
-    return jsonify(data.to_dict(orient='records'))
+    return jsonify(geodata.to_dict(orient='records'))
 
 @app.route('/chloropleth')
 def chloropleth():
@@ -37,11 +37,13 @@ def donut_chart():
             return "Annular"
         elif "T" in e_type:
             return "Total"
+        elif "P" in e_type:
+            return "Partial"
         return "Other"  
    
-    data['Simplified Type'] = data['Eclipse Type'].apply(categorize_eclipse_type)
+    geodata['Simplified Type'] = geodata['Eclipse Type'].apply(categorize_eclipse_type)
     
-    type_counts = data['Simplified Type'].value_counts().to_dict()
+    type_counts = geodata['Simplified Type'].value_counts().to_dict()
     
     return jsonify(type_counts)
 
@@ -55,7 +57,7 @@ def timeseries_plot():
 
 @app.route('/radialChart')
 def sun_constellation_data():
-    grouped = data.groupby(['Sun Constellation', 'Daytime/Nighttime']).size().unstack(fill_value=0).reset_index()
+    grouped = geodata.groupby(['Sun Constellation', 'Daytime/Nighttime']).size().unstack(fill_value=0).reset_index()
     grouped['Sun Constellation'] = grouped['Sun Constellation'].apply(lambda x: x[:2].upper())
     result = grouped.to_dict(orient='records') 
     return jsonify(result)

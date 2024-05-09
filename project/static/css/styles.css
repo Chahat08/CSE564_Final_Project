@@ -18,7 +18,8 @@ body, html {
     margin: 0;
     font-family: 'Roboto Mono', monospace;
     background-color: #000000; /*#121212;*/
-    color: #fff;  
+    color: #fff;
+    overflow-y: hidden;
 }
 
 .column {

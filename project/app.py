@@ -115,7 +115,6 @@ def timeseries_plot():
 
 @app.route('/radialChart')
 def sun_constellation_data():
-    
     #FILTER TO UPDATE CHART
     country_code = values.get("country", None)
     if country_code:
@@ -123,7 +122,8 @@ def sun_constellation_data():
     else:
         filtered_data = geodata_countries
     grouped = filtered_data.groupby(['Sun Constellation', 'Daytime/Nighttime']).size().unstack(fill_value=0).reset_index()
-    grouped['Sun Constellation'] = grouped['Sun Constellation'].apply(lambda x: x[:2].upper())
+    #grouped['Sun Constellation'] = grouped['Sun Constellation'].apply(lambda x: x[:2].upper())
+
     result = grouped.to_dict(orient='records') 
     return jsonify(result)
 

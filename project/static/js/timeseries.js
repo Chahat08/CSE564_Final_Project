@@ -1,16 +1,8 @@
-document.addEventListener('DOMContentLoaded', function () {
-
-    fetch('/timeseries')
-        .then(response => response.json())
-        .then(data => {
-            console.log("Timeseries data: ", data)
-            drawTimeseriesPlot(data)
-
-        }).catch(error => console.error('Error:', error));
-
-});
-
 function drawTimeseriesPlot(timeseriesdata) {
+
+    d3.select('#TimeseriesPlot').selectAll('*').remove();
+
+
     // Set up the dimensions and margins for the plot
     const margin = { top: 50, right: 50, bottom: 50, left: 50 };
     const width = 560 - margin.left - margin.right;

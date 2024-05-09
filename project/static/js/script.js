@@ -10,7 +10,30 @@ const colors = [
     "#eff556" // yellow
 ]
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+
+    var resetButton = document.getElementById('resetButton');
+
+    resetButton.addEventListener('click', function () {
+        d3.json('/reset_values').then(function (data) {
+            country = data.country;
+            ec_type = data.ec_type;
+            brush = data.brush;
+            selectedConstellations = data.selectedConstellations;
+
+            console.log("Variables have been reset to:", data);
+
+            fetchandRenderChoropleth();
+            fetchandRenderDonut();
+            fetchandRenderScatterPlot();
+            fetchandRenderRadialPlot();
+            fetchandRenderTimeSeriesPlot();
+            fetchandRenderMDSPlot();
+
+        }).catch(function (error) {
+            console.error('Error fetching reset values:', error);
+        });
+    });
 
     fetchandRenderChoropleth();
     fetchandRenderDonut();
@@ -18,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchandRenderRadialPlot();
     fetchandRenderTimeSeriesPlot();
     fetchandRenderMDSPlot();
+
 
 });
 

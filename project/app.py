@@ -162,6 +162,22 @@ def mds_attr():
     }
     return jsonify(chart_data)
 
+# Default settings
+default_values = {
+    "country": "",
+    "ec_type": ["Partial", "Annular", "Total", "Hybrid"],
+    "brush": [],
+    "selectedConstellations": [
+        "Sagittarius", "Capricornus", "Aquarius", "Pisces", "Aries",
+        "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra",
+        "Scorpius", "Ophiuchus"
+    ]
+}
+
+@app.route('/reset_values', methods=['GET'])
+def reset_values():
+    return jsonify(default_values)
+
 if __name__ == '__main__':
     # serve(app, host='0.0.0.0', port=8080)
     app.run(debug=True)

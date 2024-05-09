@@ -36,7 +36,12 @@ function drawChloropleth(geodata) {
     
     // Create a tooltip
     const tooltip = d3.select("#chloroplethPlot").append("div")
-        .attr("class", "tooltipChloropleth")
+        .attr("class", "tooltipclassic")
+        .style("position", "absolute")
+        .style("visibility", "hidden");
+
+    const tooltip2 = d3.select("#chloroplethPlot").append("div")
+        .attr("class", "tooltipclassic")
         .style("position", "absolute")
         .style("visibility", "hidden");
 
@@ -58,23 +63,27 @@ function drawChloropleth(geodata) {
         });
     }
 
-    // Create a zoom behavior
-    const zoom = d3.zoom()
-        .scaleExtent([1, 3]) // Set the scale extent
-        .translateExtent([[-10, -100], [width + 10, height + 200]]) // Set the translation extent
-        .on("zoom", zoomed); // Specify the function to call when zooming
+    // // Create a zoom behavior
+    // const zoom = d3.zoom()
+    //     .scaleExtent([1, 3]) // Set the scale extent
+    //     .translateExtent([[-10, -100], [width + 10, height + 200]]) // Set the translation extent
+    //     .on("zoom", zoomed); // Specify the function to call when zooming
 
-    // Call the zoom behavior on the SVG element
-    svg.call(zoom);
+    // // Call the zoom behavior on the SVG element
+    // svg.call(zoom);
 
-    // Define the zoomed function
-    function zoomed(event) {
-        // Get the current transform
-        const { transform } = event;
-        // Apply the transform to the SVG elements
-        svg.selectAll("path")
-            .attr("transform", transform);
-    }
+    // // Define the zoomed function
+    // function zoomed(event) {
+    //     // Get the current transform
+    //     const { transform } = event;
+
+    //     points.attr("transform", transform);
+    //     // Apply the transform to the SVG elements
+    //     svg.selectAll("path")
+    //         .attr("transform", transform);
+
+        
+    // }
 
 
 
@@ -176,6 +185,114 @@ function drawChloropleth(geodata) {
                 }
             });
 
+    
+        const visible_cities = geodata.filter(row => row.Visibility !== "Not Visible");
+
+        const points = svg.selectAll(".point")
+        .data(visible_cities) // Assuming visible_cities contains the data for the points
+        .enter().append("circle")
+        .attr("class", "point")
+        .attr("r", 2) // Adjust the radius of the circles as needed
+        .attr("fill", "blue")
+        .attr("cx", d => projection([d["Eclipse Longitude"], d["Eclipse Latitude"]])[0])
+        .attr("cy", d => projection([d["Eclipse Longitude"], d["Eclipse Latitude"]])[1])
+        .on("mouseover", function(event, d) {
+            const tooltipWidth = 150; // Adjust based on your tooltip content and style
+            const tooltipHeight = 100; // Adjust based on your tooltip content and style
+            const mouseX = event.pageX;
+            const mouseY = event.pageY;
+            const mapContainer = document.getElementById("chloroplethPlot");
+            const mapRect = mapContainer.getBoundingClientRect();
+            const mapWidth = mapRect.width;
+            const mapHeight = mapRect.height;
+        
+            let tooltipX = mouseX + 10; // Initial position offset
+            let tooltipY = mouseY - 10; // Initial position offset
+        
+            // Check if tooltip exceeds map width
+            if (tooltipX + tooltipWidth > mapWidth) {
+                tooltipX = mapWidth - tooltipWidth - 10; // Adjusting position to stay within the map
+            }
+        
+            // Check if tooltip exceeds map height
+            if (tooltipY + tooltipHeight > mapHeight) {
+                tooltipY = mapHeight - tooltipHeight - 10; // Adjusting position to stay within the map
+            }
+
+            yeartxt = d.Year.startsWith("-") ? d.Year.substring(1) + " BC" : d.Year;
+        
+            tooltip2.style("visibility", "visible")
+                .html(d.Visibility + "<br>Year : " + yeartxt + "<br>" + d["Daytime/Nighttime"] + "<br>Duration : " + d["Central Duration"])
+                .style("top", tooltipY + "px")
+                .style("left", tooltipX + "px");
+        
+            highlight(this);
+        })
+        
+        .on("mouseout", function(event, d) {
+            if(d.id != selected){
+            console.log("Mouseout")
+            console.log(d)
+            tooltip2.style("visibility", "hidden");
+            unhighlight(this)
+            }
+        });
+
+
+        // // Define the mouseover and mouseout behavior for the points
+        // points.on("mouseover", function(event, d) {
+        //     // Construct the tooltip2 text based on the data
+        //     let tooltip2Text = "";
+        //     if (d.Visibility !== "Not Visible") {
+        //         tooltip2Text += "<strong>Visibility:</strong> " + d.Visibility + "<br>";
+        //     }
+        //     if (d.Year) {
+        //         tooltip2Text += "<strong>Year:</strong> " + d.Year + "<br>";
+        //     }
+        //     if (d["Daytime/Nighttime"]) {
+        //         tooltip2Text += "<strong>Daytime/Nighttime:</strong> " + d["Daytime/Nighttime"] + "<br>";
+        //     }
+        //     if (d["Central Duration"]) {
+        //         tooltip2Text += "<strong>Central Duration:</strong> " + d["Central Duration"];
+        //     }
+
+        //     // Show the tooltip2 with the constructed text
+        //     tooltip2.transition()
+        //         .duration(200)
+        //         .style("opacity", .9);
+        //     tooltip2.html(tooltip2Text)
+        //         .style("left", (event.pageX + 10) + "px")
+        //         .style("top", (event.pageY - 28) + "px");
+        // })
+        // .on("mouseout", function(event, d) {
+        //     // Hide the tooltip2 on mouseout
+        //     tooltip2.transition()
+        //         .duration(500)
+        //         .style("opacity", 0);
+        // });
+
+
+            // Create a zoom behavior
+        const zoom = d3.zoom()
+        .scaleExtent([1, 3]) // Set the scale extent
+        .translateExtent([[-10, -100], [width + 10, height + 200]]) // Set the translation extent
+        .on("zoom", zoomed); // Specify the function to call when zooming
+
+        // Call the zoom behavior on the SVG element
+        svg.call(zoom);
+
+        // Define the zoomed function
+        function zoomed(event) {
+            // Get the current transform
+            const { transform } = event;
+
+            points.attr("transform", transform);
+            // Apply the transform to the SVG elements
+            svg.selectAll("path")
+                .attr("transform", transform);
+
+            
+        }
             
         // Add a legend for the colorscale
         const legendWidth = 150;

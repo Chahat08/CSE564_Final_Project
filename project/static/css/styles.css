@@ -1,4 +1,4 @@
-.tooltipChloropleth {
+.tooltipclassic {
     position: relative;
     background-color: rgb(255, 255, 255);
     color: rgb(202, 42, 42);
@@ -23,7 +23,7 @@ body, html {
 
 .column {
     border : 2px solid white;
-    max-height: 43.5vh;
+    max-height: 45vh;
 }
 
 .chart {

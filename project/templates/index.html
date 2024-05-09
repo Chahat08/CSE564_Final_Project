@@ -57,7 +57,7 @@
                 
             </div>
             <div class="col-4 column">
-                <div id="MDSplot" class= "chart"> MDS Maybe? </div>
+                <div id="MDSplot" class= "chart"></div>
             </div>
             <div class="col-4 column">
                 <div id="TimeseriesPlot" class= "chart"></div>
@@ -65,12 +65,15 @@
         </div>
     </div>
 
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/scatterPlot.js') }}"></script>
     <script src="{{ url_for('static', filename='js/scatterLegend.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chloropleth.js') }}"></script>
     <script src="{{ url_for('static', filename='js/donut.js') }}"></script>
     <script src="{{ url_for('static', filename='js/timeseries.js') }}"></script>
     <script src="{{ url_for('static', filename='js/radialChart.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mdsPlot.js') }}"></script>
+
 
 </body>
 </html>

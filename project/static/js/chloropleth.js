@@ -1,16 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
-
-    fetch('/chloropleth')
-        .then(response => response.json())
-        .then(data => {
-            // console.log(data)
-            drawChloropleth(data)
-
-        }).catch(error => console.error('Error:', error));
-
-});
-
-function drawChloropleth(geodata) {
+function drawChloropleth(geodata, other) {
     // Set up the dimensions of the SVG container
     const width = 800;
     const height = 320;
@@ -48,7 +36,7 @@ function drawChloropleth(geodata) {
     function highlight(obj){
         d3.select(obj)
         .style("stroke","white")
-        .style("stroke-width",1.5);
+        .style("stroke-width",2.5);
     }
     function unhighlight(obj){
         d3.select(obj)
@@ -62,31 +50,6 @@ function drawChloropleth(geodata) {
             unhighlight(this); // Unhighlight the country
         });
     }
-
-    // // Create a zoom behavior
-    // const zoom = d3.zoom()
-    //     .scaleExtent([1, 3]) // Set the scale extent
-    //     .translateExtent([[-10, -100], [width + 10, height + 200]]) // Set the translation extent
-    //     .on("zoom", zoomed); // Specify the function to call when zooming
-
-    // // Call the zoom behavior on the SVG element
-    // svg.call(zoom);
-
-    // // Define the zoomed function
-    // function zoomed(event) {
-    //     // Get the current transform
-    //     const { transform } = event;
-
-    //     points.attr("transform", transform);
-    //     // Apply the transform to the SVG elements
-    //     svg.selectAll("path")
-    //         .attr("transform", transform);
-
-        
-    // }
-
-
-
 
     // Load the GeoJSON file
     d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(function (world) {
@@ -127,24 +90,34 @@ function drawChloropleth(geodata) {
                 if( !d.selected) {
                     unhighlightAll();
                     selected = d.id;
-                    console.log("Click");
-                    console.log(d);
+                    // console.log("Click");
+                    // console.log(d);
                     d.selected = true;
                     highlight(this)
 
-                    //WRITE CODE : UPDATE GRAPHS HERE
+                    // console.log(d)
+                    //UPDATE COUNTRY
+                    country = d.id;
+
+                    // WRITE CODE : UPDATE GRAPHS HERE
+                    fetchandRenderScatterPlot();
+                    // fetchandRenderMDSPlot();
+                    fetchandRenderDonut();
+                    fetchandRenderRadialPlot();
+                    fetchandRenderTimeSeriesPlot();
                 }
                 else{
+                    country = null;
                     unhighlightAll();
+
+                    fetchandRenderScatterPlot();
+                    // fetchandRenderMDSPlot();
+                    fetchandRenderDonut();
+                    fetchandRenderRadialPlot();
+                    fetchandRenderTimeSeriesPlot();
                 }
             })
-            // .on("mouseover", function(event, d) {
-            //     tooltip.style("visibility", "visible")
-            //         .html("<strong>Country:</strong> " + d.properties.name + "<br><strong>Eclipses:</strong> " + d.properties.eclipses)
-            //         .style("top", (event.pageY - 10) + "px")
-            //         .style("left", (event.pageX + 10) + "px");
-            //     highlight(this)
-            // })
+
             .on("mouseover", function(event, d) {
                 const tooltipWidth = 150; // Adjust based on your tooltip content and style
                 const tooltipHeight = 50; // Adjust based on your tooltip content and style
@@ -178,22 +151,27 @@ function drawChloropleth(geodata) {
             
             .on("mouseout", function(event, d) {
                 if(d.id != selected){
-                console.log("Mouseout")
-                console.log(d)
+                // console.log("Mouseout")
+                // console.log(d)
                 tooltip.style("visibility", "hidden");
                 unhighlight(this)
                 }
             });
 
     
-        const visible_cities = geodata.filter(row => row.Visibility !== "Not Visible");
+        const visible_cities = other
+        // const visible_cities = geodata.filter(row => row.Visibility !== "Not Visible");
+        const radiusScale = d3.scaleLinear()
+        .domain([d3.min(other, d => d['Eclipse Magnitude']), d3.max(other, d => d['Eclipse Magnitude'])])
+        .range([0.5, 1]);
 
         const points = svg.selectAll(".point")
         .data(visible_cities) // Assuming visible_cities contains the data for the points
         .enter().append("circle")
         .attr("class", "point")
-        .attr("r", 2) // Adjust the radius of the circles as needed
-        .attr("fill", "blue")
+        .attr("r", d => radiusScale(d["Eclipse Magnitude"]))
+        .attr("opacity", 1) // Adjust the radius of the circles as needed
+        .attr("fill", "white")
         .attr("cx", d => projection([d["Eclipse Longitude"], d["Eclipse Latitude"]])[0])
         .attr("cy", d => projection([d["Eclipse Longitude"], d["Eclipse Latitude"]])[1])
         .on("mouseover", function(event, d) {
@@ -231,10 +209,11 @@ function drawChloropleth(geodata) {
         
         .on("mouseout", function(event, d) {
             if(d.id != selected){
-            console.log("Mouseout")
-            console.log(d)
+            // console.log("Mouseout")
+            // console.log(d)
             tooltip2.style("visibility", "hidden");
-            unhighlight(this)
+            d3.select(this)
+            .style("stroke-width",0); 
             }
         });
 
@@ -289,9 +268,7 @@ function drawChloropleth(geodata) {
             points.attr("transform", transform);
             // Apply the transform to the SVG elements
             svg.selectAll("path")
-                .attr("transform", transform);
-
-            
+                .attr("transform", transform);    
         }
             
         // Add a legend for the colorscale

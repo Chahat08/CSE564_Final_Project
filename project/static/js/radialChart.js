@@ -4,7 +4,7 @@ function drawRadialPlot(data){
 
        const width = 320;
             const height = 320;
-            const innerRadius = 70;
+            const innerRadius = 60;
             const outerRadius = Math.min(width, height) / 2 - 30;
             const svg = d3.select("#radialChart")
                 .append("svg")
@@ -62,7 +62,7 @@ function drawRadialPlot(data){
                 .padAngle(0.01)
                 .padRadius(innerRadius);
 
-            let selectedConstellations = ["Sagittarius", "Capricornus", "Aquarius", "Pisces", "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpius", "Ophiuchus", "Sagittarius"];
+            /*let selectedConstellations = ["Sagittarius", "Capricornus", "Aquarius", "Pisces", "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpius", "Ophiuchus"];*/
 
             const layerGroups = svg.append("g")
                 .selectAll("g")
@@ -82,11 +82,18 @@ function drawRadialPlot(data){
                         selectedConstellations = selectedConstellations.filter(c => c !== constellation);
                         svg.selectAll('path').filter(dd => dd.data['Sun Constellation'] === constellation)
                             .transition().style("opacity", 0.5);
+
                     } else {
                         selectedConstellations.push(constellation);
                         svg.selectAll('path').filter(dd => dd.data['Sun Constellation'] === constellation)
                             .transition().style("opacity", 1);
                     }
+                    fetchandRenderScatterPlot();
+                    // fetchandRenderMDSPlot();
+                    fetchandRenderDonut();
+                    fetchandRenderChoropleth();
+                    //fetchandRenderRadialPlot();
+                    fetchandRenderTimeSeriesPlot();
                 })
                 .style("cursor", "pointer")
                 .on("mouseover", function (event, d) {

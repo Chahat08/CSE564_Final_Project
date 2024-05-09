@@ -14,7 +14,11 @@ values = {}
 # data1 = pd.read_csv("static/data/eclipse_removed.csv") 
 # data2 = pd.read_csv('static/data/eclipse_data_enriched_5000_years.csv')
 geodata_countries = pd.read_csv("static/data/geodata_countries.csv")
-geodatafull = pd.read_csv("static/data/geodata.csv")
+geodatafull = pd.read_csv("static/data/geodatafull.csv")
+
+geodata_countries = geodata_countries.replace({np.nan: None})
+geodatafull = geodatafull.replace({np.nan: None})
+
 
 numerical_cols = ['Delta T (s)','Gamma', 'Eclipse Magnitude', 'Sun Altitude',
                   'Sun Azimuth',  'Eclipse Latitude','Eclipse Longitude', 'obliquity', 'Inter-Eclipse Duration',
@@ -22,42 +26,69 @@ numerical_cols = ['Delta T (s)','Gamma', 'Eclipse Magnitude', 'Sun Altitude',
 
 df_numerical = geodata_countries[numerical_cols]
 
-data = None
-with open('../data/geodata_countries.csv', 'r') as csvfile:
+geodata_csv = None
+with open('static/data/geodata_countries.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
-        data = list(reader)
-data_ = None
-with open('static/data/geodata.csv', 'r') as csvfile:
-        reader = csv.DictReader(csvfile)
-        data_ = list(reader)        
+        geodata_csv = list(reader)
+      
+#def categorize_eclipse_type(e_type):
+#        if "H" in e_type:
+#            return "Hybrid"
+#        elif "A" in e_type:
+#            return "Annular"
+#        elif "T" in e_type:
+#            return "Total"
+#        elif "P" in e_type:
+#            return "Partial"
+#        return "Other"  
+   
+#geodata_countries['Simplified Type'] = geodata_countries['Eclipse Type'].apply(categorize_eclipse_type)
+
+#geodata_countries.to_csv("static/data/geodata_countries.csv", index = False)
+
+#geodatafull['Simplified Type'] = geodatafull['Eclipse Type'].apply(categorize_eclipse_type)
+
+#geodatafull.to_csv("static/data/geodatafull.csv", index = False)
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+def filter_data(unfiltered_data):
+    country_code = values.get("country", None)
+    ec_types = values.get("ec_type", None)
+    constellations = values.get("constellation", None)
+    filtered_data = unfiltered_data
+    if country_code:
+        filtered_data = filtered_data[filtered_data['Alpha3'] == country_code]
+    if ec_types:
+        filtered_data = filtered_data[filtered_data['Simplified Type'].isin(ec_types)]
+    if constellations:
+        filtered_data = filtered_data[filtered_data['Sun Constellation'].isin(constellations)]
+
+
+    return filtered_data
+
 
 @app.route('/scatter_plot')
 def scatter_plot():
     data = geodatafull.replace({np.nan: None})
     
     #FILTER TO UPDATE CHART
-    country_code = values.get("country", None)
-    print("Country code : ", country_code)
-    if country_code:
-        filtered_data = data[data['Alpha3'] == country_code]
-    else:
-        filtered_data = data
+    filtered_data = filter_data(data)
     return jsonify(filtered_data.to_dict(orient="records"))
     #return jsonify(data1.to_dict(orient="records"))
     #return jsonify(data)
 
 @app.route('/chloropleth')
 def chloropleth():
+    filtered_data = filter_data(geodata_countries)
+    #filtered_csv = filtered_data.to_csv(index=False)
+    #reader = csv.DictReader(filtered_csv)
+    #geodata_csv = list(reader)
     
-    chartdata = {
-        "dataA" : data,
-        "dataB" : data_
-    }
-    return jsonify(chartdata)
+    result_data = filtered_data.to_dict(orient='records')
+    return jsonify(result_data)
 
 @app.route('/receive_data', methods=['POST'])
 def receive_idi():
@@ -65,7 +96,7 @@ def receive_idi():
     updated_values = request.get_json()
     values['country'] = updated_values['country']
     values['ec_type'] = updated_values['ec_type']
-    values['constellation'] = updated_values['constellation']
+    values['constellation'] = updated_values['selectedConstellations']
     values['brush'] = updated_values['brush']
     
     return jsonify({'message': 'IDI received successfully',
@@ -76,25 +107,9 @@ def receive_idi():
 
 @app.route('/donut')
 def donut_chart():
-    def categorize_eclipse_type(e_type):
-        if "H" in e_type:
-            return "Hybrid"
-        elif "A" in e_type:
-            return "Annular"
-        elif "T" in e_type:
-            return "Total"
-        elif "P" in e_type:
-            return "Partial"
-        return "Other"  
-   
-    geodata_countries['Simplified Type'] = geodata_countries['Eclipse Type'].apply(categorize_eclipse_type)
     
     #FILTER TO UPDATE CHART
-    country_code = values.get("country", None)
-    if country_code:
-        filtered_data = geodata_countries[geodata_countries['Alpha3'] == country_code]
-    else:
-        filtered_data = geodata_countries
+    filtered_data = filter_data(geodatafull)
     type_counts = filtered_data['Simplified Type'].value_counts().to_dict()
     
     return jsonify(type_counts)
@@ -103,11 +118,7 @@ def donut_chart():
 def timeseries_plot():
     
     #FILTER TO UPDATE CHART
-    country_code = values.get("country", None)
-    if country_code:
-        filtered_data = geodata_countries[geodata_countries['Alpha3'] == country_code]
-    else:
-        filtered_data = geodatafull
+    filtered_data = filter_data(geodatafull)
     selected_columns = filtered_data[["Decade", "Eclipse Magnitude"]]
     data_dict = selected_columns.to_dict(orient="records")
     
@@ -116,15 +127,19 @@ def timeseries_plot():
 @app.route('/radialChart')
 def sun_constellation_data():
     #FILTER TO UPDATE CHART
-    country_code = values.get("country", None)
-    if country_code:
-        filtered_data = geodata_countries[geodata_countries['Alpha3'] == country_code]
-    else:
-        filtered_data = geodata_countries
+    filtered_data = filter_data(geodatafull)
     grouped = filtered_data.groupby(['Sun Constellation', 'Daytime/Nighttime']).size().unstack(fill_value=0).reset_index()
+    print(grouped)
     #grouped['Sun Constellation'] = grouped['Sun Constellation'].apply(lambda x: x[:2].upper())
+    # Sort by the sum of the counts across both 'Daytime' and 'Nighttime', descending
+    grouped['Total'] = grouped['Daytime'] + grouped['Nighttime']
+    grouped_sorted = grouped.sort_values(by='Total', ascending=False).drop(columns=['Total'])
 
-    result = grouped.to_dict(orient='records') 
+    # Optionally, shorten the 'Sun Constellation' names or other processing
+    # grouped_sorted['Sun Constellation'] = grouped_sorted['Sun Constellation'].apply(lambda x: x[:2].upper())
+
+    result = grouped_sorted.to_dict(orient='records')
+    #result = grouped.to_dict(orient='records') 
     return jsonify(result)
 
 @app.route('/mdsplot')

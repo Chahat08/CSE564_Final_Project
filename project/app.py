@@ -2,12 +2,17 @@ import csv
 from flask import Flask, render_template, jsonify, request
 from waitress import serve
 import pandas as pd
+import numpy as np
 
 app = Flask(__name__)
 
-#data = pd.read_csv("static/data/eclipse_removed.csv") 
+data1 = pd.read_csv("static/data/eclipse_removed.csv") 
 data2 = pd.read_csv('static/data/eclipse_data_enriched_5000_years.csv')
 geodata = pd.read_csv("static/data/geo_coded_data_clean.csv")
+data = None
+with open('../data/geo_coded_data_clean.csv', 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+        data = list(reader)
 
 @app.route('/')
 def index():
@@ -15,17 +20,13 @@ def index():
 
 @app.route('/scatter_plot')
 def scatter_plot():
-    return jsonify(geodata.to_dict(orient='records')) 
-
-@app.route('/pcp')
-def pcp():
-    return jsonify(geodata.to_dict(orient='records'))
+    data = data2.replace({np.nan: None})
+    return jsonify(data.to_dict(orient="records"))
+    #return jsonify(data1.to_dict(orient="records"))
+    #return jsonify(data)
 
 @app.route('/chloropleth')
 def chloropleth():
-    with open('../data/geo_coded_data_clean.csv', 'r') as csvfile:
-        reader = csv.DictReader(csvfile)
-        data = list(reader)
     return jsonify(data)
 
 @app.route('/donut')

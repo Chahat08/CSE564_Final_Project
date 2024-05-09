@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const color = d3.scaleOrdinal()
                 .domain(Object.keys(data))
-                .range(["#ff7f0e", "#d62728", "#fcc203"]);  // Warm color palette
+                .range(["#ff7f0e", "#d62728", "#ebd271" ,"#fcc203"]);  // Warm color palette
 
             const pie = d3.pie()
                 .value(d => d[1])

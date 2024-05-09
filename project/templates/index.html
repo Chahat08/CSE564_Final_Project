@@ -39,20 +39,20 @@
                 <div class="form-row">
                     <div class="col-md-4">
                         <select class="custom-select" id="xAxisSelect">
-                            <option selected>Decade</option>
+                            <option selected>Eclipse Longitude</option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <select class="custom-select" id="yAxisSelect">
-                            <option selected>Localized ESC</option>
+                            <option selected>Eclipse Latitude</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <input type="number" class="form-control" id="binCount" value="25" step="5">
+                        <div id="scatter-legend"></div>
                     </div>
                 </div>
                 <div class="row">
-                    <div id="hexbinPlot" class= "chart"></div>
+                    <div id="scatterPlot" class= "chart"></div>
                 </div>
                 
             </div>
@@ -65,9 +65,9 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/hexbinPlot.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/scatterPlot.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/scatterLegend.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chloropleth.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/pcp.js') }}"></script>
     <script src="{{ url_for('static', filename='js/donut.js') }}"></script>
     <script src="{{ url_for('static', filename='js/timeseries.js') }}"></script>
     <script src="{{ url_for('static', filename='js/radialChart.js') }}"></script>

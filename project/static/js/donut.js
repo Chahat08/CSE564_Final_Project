@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('/donut')
         .then(response => response.json())
         .then(data => {
-            const width = 360;
-            const height = 360;
+            const width = 320;
+            const height = 320;
             const margin = 20;
             const radius = Math.min(width, height) / 2 - margin;
             const innerRadius = radius * 0.5;

@@ -21,6 +21,17 @@ body, html {
     color: #fff;  
 }
 
+.column {
+    border : 2px solid white;
+    max-height: 43.5vh;
+}
+
+.chart {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+
 .dashboard-container {
     padding: 20px;
 }

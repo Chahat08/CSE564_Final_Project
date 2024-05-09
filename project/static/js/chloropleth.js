@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function drawChloropleth(geodata) {
     // Set up the dimensions of the SVG container
-    const width = 700;
-    const height = 300;
+    const width = 800;
+    const height = 320;
     var selected = false;
 
     d3.select('#chloroplethPlot').selectAll('*').remove();
@@ -61,7 +61,7 @@ function drawChloropleth(geodata) {
     // Create a zoom behavior
     const zoom = d3.zoom()
         .scaleExtent([1, 3]) // Set the scale extent
-        .translateExtent([[-100, -200], [width + 100, height + 200]]) // Set the translation extent
+        .translateExtent([[-10, -100], [width + 10, height + 200]]) // Set the translation extent
         .on("zoom", zoomed); // Specify the function to call when zooming
 
     // Call the zoom behavior on the SVG element
@@ -129,13 +129,44 @@ function drawChloropleth(geodata) {
                     unhighlightAll();
                 }
             })
+            // .on("mouseover", function(event, d) {
+            //     tooltip.style("visibility", "visible")
+            //         .html("<strong>Country:</strong> " + d.properties.name + "<br><strong>Eclipses:</strong> " + d.properties.eclipses)
+            //         .style("top", (event.pageY - 10) + "px")
+            //         .style("left", (event.pageX + 10) + "px");
+            //     highlight(this)
+            // })
             .on("mouseover", function(event, d) {
+                const tooltipWidth = 150; // Adjust based on your tooltip content and style
+                const tooltipHeight = 50; // Adjust based on your tooltip content and style
+                const mouseX = event.pageX;
+                const mouseY = event.pageY;
+                const mapContainer = document.getElementById("chloroplethPlot");
+                const mapRect = mapContainer.getBoundingClientRect();
+                const mapWidth = mapRect.width;
+                const mapHeight = mapRect.height;
+            
+                let tooltipX = mouseX + 10; // Initial position offset
+                let tooltipY = mouseY - 10; // Initial position offset
+            
+                // Check if tooltip exceeds map width
+                if (tooltipX + tooltipWidth > mapWidth) {
+                    tooltipX = mapWidth - tooltipWidth - 10; // Adjusting position to stay within the map
+                }
+            
+                // Check if tooltip exceeds map height
+                if (tooltipY + tooltipHeight > mapHeight) {
+                    tooltipY = mapHeight - tooltipHeight - 10; // Adjusting position to stay within the map
+                }
+            
                 tooltip.style("visibility", "visible")
                     .html("<strong>Country:</strong> " + d.properties.name + "<br><strong>Eclipses:</strong> " + d.properties.eclipses)
-                    .style("top", (event.pageY - 10) + "px")
-                    .style("left", (event.pageX + 10) + "px");
-                highlight(this)
+                    .style("top", tooltipY + "px")
+                    .style("left", tooltipX + "px");
+            
+                highlight(this);
             })
+            
             .on("mouseout", function(event, d) {
                 if(d.id != selected){
                 console.log("Mouseout")

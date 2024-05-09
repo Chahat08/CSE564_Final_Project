@@ -191,22 +191,42 @@ function drawTimeseriesPlot(timeseriesdata) {
         if (selection) {
             const [x0, x1] = selection.map(xScale.invert);
             console.log("Selected decades:", [Math.round(x0), Math.round(x1)]);
+
+            selected_decades = [Math.round(x0), Math.round(x1)]
         }
     }
+
+    let isBrushCleared = false;
 
     function brushended(event) {
-        if (!event.selection) {
-            brushG.call(brush.move, null);
+        if (event.selection) {
+            console.log("hi")
+            const [x0, x1] = event.selection.map(xScale.invert);
+            console.log("Selected decades:", [Math.round(x0), Math.round(x1)]);
+
+            selected_decades = [Math.round(x0), Math.round(x1)]
+            fetchandRenderScatterPlot();
+            fetchandRenderChoropleth();
+            fetchandRenderMDSPlot();
+            fetchandRenderDonut();
+            fetchandRenderRadialPlot();
         }
+        else {
+            // If brush is cleared programmatically, don't trigger again
+            if (!isBrushCleared) {
+                isBrushCleared = true;
+                console.log("No brush");
+                brushG.call(brush.move, null);
+                selected_decades = [];
+                fetchandRenderScatterPlot();
+                fetchandRenderChoropleth();
+                fetchandRenderMDSPlot();
+                fetchandRenderDonut();
+                fetchandRenderRadialPlot();
+                 // Set flag to true
+            } else {
+                isBrushCleared = false; // Reset flag
+            }
+    }
     }
 }
-
-
-
-
-
-
-
-
-   
-  

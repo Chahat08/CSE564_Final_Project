@@ -1,8 +1,10 @@
-document.addEventListener('DOMContentLoaded', function () {
-    fetch('/scatter_plot')
-        .then(response => response.json())
-        .then(data => {
-            //console.log(data)
+
+function drawScatterPlot(data)
+{
+
+    d3.select('#scatterPlot').selectAll('*').remove();
+
+    //console.log(data)
             // Populate dropdown menus with data columns
             var allVariables = Object.keys(data[0]);
             var selectX = d3.select('#xAxisSelect');
@@ -15,8 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Set the dimensions and margins of the graph
             var margin = { top: 10, right: 20, bottom: 35, left: 60 },
-                width = 500 - margin.left - margin.right,
-                height = 250 - margin.top - margin.bottom;
+                width = 540 - margin.left - margin.right,
+                height = 290 - margin.top - margin.bottom;
 
             var svg = d3.select("#scatterPlot").append("svg")
                 .attr("width", width + margin.left + margin.right)// + 100)
@@ -45,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 var radiusScale = d3.scaleSqrt()
                     .domain(d3.extent(data, d => +d['Eclipse Magnitude']))
-                    .range([1, 1]);
+                    .range([0.5, 1.5]);
 
                 var colorScale = d3.scaleOrdinal()
                     .domain(['Partial', 'Total', 'Hybrid', 'Annular'])
@@ -152,7 +154,4 @@ document.addEventListener('DOMContentLoaded', function () {
             // Event listeners for dropdown changes
             selectX.on("change", updatePlot);
             selectY.on("change", updatePlot);
-        })
-        .catch(error => console.error('Error:', error));
-});
-
+}

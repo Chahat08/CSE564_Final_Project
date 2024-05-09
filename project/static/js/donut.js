@@ -1,22 +1,20 @@
-document.addEventListener('DOMContentLoaded', function () {
-    fetch('/donut')
-        .then(response => response.json())
-        .then(data => {
-            const width = 320;
-            const height = 320;
-            const margin = 50;
-            const radius = Math.min(width, height) / 2 - margin;
-            const innerRadius = radius * 0.5;
-            const outerRadius = radius * 1.1;  // Extend outer radius for label placement
+function drawDonut(data){
+    const width = 320;
+    const height = 320;
+    const margin = 20;
+    const radius = Math.min(width, height) / 2 - margin;
+    const innerRadius = radius * 0.5;
 
-            const svg = d3.select("#donutChart")
-                .append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-                .attr("transform", `translate(${width / 2}, ${height / 2})`);
+    d3.select('#donutChart').selectAll('*').remove();
 
-            svg.append("text")
+    const svg = d3.select("#donutChart")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width / 2}, ${height / 2})`);
+  
+  svg.append("text")
                 .attr("class", "chart-title")
                 .attr("x", 0)
                 .attr("y", -(height / 2) + 25)  // Adjust the y offset to place the title appropriately
@@ -28,15 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const color = d3.scaleOrdinal()
                 .domain(Object.keys(data))
                 .range(["#ff7f0e", "#d62728", "#ebd271", "#fcc203"]);
-
-            const pie = d3.pie()
-                .value(d => d[1])
-                .sort(null);
-            const data_ready = pie(Object.entries(data));
-
-            const arcGenerator = d3.arc()
-                .innerRadius(innerRadius)
-                .outerRadius(radius);
 
             const arcHover = d3.arc()
                 .innerRadius(innerRadius)
@@ -118,8 +107,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 .data(data_ready)
                 .enter().append("g")
                 .attr("transform", (d, i) => `translate(0, ${-innerRadius / 2 + i * 20})`);
-
-            
 
             legend.append("rect")
                 .attr("x", -35)

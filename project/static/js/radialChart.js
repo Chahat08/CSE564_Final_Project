@@ -1,8 +1,8 @@
-document.addEventListener('DOMContentLoaded', function () {
-    fetch('/radialChart')
-        .then(response => response.json())
-        .then(data => {
-            const width = 320;
+function drawRadialPlot(data){
+    d3.select('#radialChart').selectAll('*').remove();
+
+
+       const width = 320;
             const height = 320;
             const innerRadius = 70;
             const outerRadius = Math.min(width, height) / 2 - 30;
@@ -170,7 +170,4 @@ document.addEventListener('DOMContentLoaded', function () {
                 .text(d => d['Sun Constellation'].substring(0, 3).toUpperCase());
 
             yAxis.moveToFront();
-
-        })
-        .catch(error => console.error('Error:', error));
-});
+}

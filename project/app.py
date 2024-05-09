@@ -58,6 +58,7 @@ def filter_data(unfiltered_data):
     country_code = values.get("country", None)
     ec_types = values.get("ec_type", None)
     constellations = values.get("constellation", None)
+    selected_decades = values.get("selected_decades", None)
     filtered_data = unfiltered_data
     if country_code:
         filtered_data = filtered_data[filtered_data['Alpha3'] == country_code]
@@ -65,7 +66,8 @@ def filter_data(unfiltered_data):
         filtered_data = filtered_data[filtered_data['Simplified Type'].isin(ec_types)]
     if constellations:
         filtered_data = filtered_data[filtered_data['Sun Constellation'].isin(constellations)]
-
+    if selected_decades:
+        filtered_data = filtered_data[(filtered_data['Year'] >= selected_decades[0]) & (filtered_data['Year'] <= selected_decades[1])]
 
     return filtered_data
 
@@ -97,13 +99,13 @@ def receive_idi():
     values['country'] = updated_values['country']
     values['ec_type'] = updated_values['ec_type']
     values['constellation'] = updated_values['selectedConstellations']
-    values['brush'] = updated_values['brush']
+    values['selected_decades'] = updated_values['selected_decades']
     
     return jsonify({'message': 'IDI received successfully',
                     "country" : values["country"],
                     "ec_type" : values['ec_type'],
                     "constellation" : values["constellation"],
-                    "brush": values["brush"]})
+                    "selected_decades": values["selected_decades"]})
 
 @app.route('/donut')
 def donut_chart():

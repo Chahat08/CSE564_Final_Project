@@ -3,6 +3,13 @@ var ec_type = ["Partial", "Annular", "Total", "Hybrid"]
 var brush = []
 var selectedConstellations = ["Sagittarius", "Capricornus", "Aquarius", "Pisces", "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpius", "Ophiuchus"]
 
+const colors = [
+    "#6ceb6c", // green
+    "#bc6ceb", // purple
+    "#f55656", // red
+    "#eff556" // yellow
+]
+
 document.addEventListener('DOMContentLoaded', function() {
 
     fetchandRenderChoropleth();

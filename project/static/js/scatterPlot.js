@@ -47,11 +47,11 @@ function drawScatterPlot(data)
 
                 var radiusScale = d3.scaleSqrt()
                     .domain(d3.extent(data, d => +d['Eclipse Magnitude']))
-                    .range([1, 1]);
+                    .range([1, 3]);
 
                 var colorScale = d3.scaleOrdinal()
                     .domain(['Partial', 'Total', 'Hybrid', 'Annular'])
-                    .range(["#ebd271", "#fcc203", "#d62728", "#ff7f0e"]);
+                    .range([colors[2], colors[3], colors[1], colors[0]]);
 
 
                 // Format numbers in millions
@@ -101,8 +101,8 @@ function drawScatterPlot(data)
                     .attr("cy", d => yScale(d[selectedY]))
                     .attr("r", d => radiusScale(d['Eclipse Magnitude']))
                     .attr("fill", d => colorScale(classifyEclipseType(d['Eclipse Type'])))
-                    .attr("opacity", 0.5);
-                //.attr("stroke", "black");
+                    .attr("opacity", 1.0)
+                .attr("stroke", "black");
 
                 svg.append("text")
                     .attr("x", width / 2)

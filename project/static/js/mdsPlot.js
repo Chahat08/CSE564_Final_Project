@@ -94,7 +94,7 @@ function renderMDSAttrPlot(mdsdata){
         .attr("cx", d => xScale(d.Comp1))
         .attr("cy", d => yScale(d.Comp2))
         .attr("r", 5)
-        .style("fill", "steelblue")
+        .style("fill", colors[1])
 
     svg.append("text")
         .attr("x", (width / 2))

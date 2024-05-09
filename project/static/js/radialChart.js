@@ -47,7 +47,7 @@ function drawRadialPlot(data){
                 .range([innerRadius, outerRadius]);
 
             const z = d3.scaleOrdinal()
-                .range(["#ff7f0e", "#613005"]);
+                .range([colors[0], colors[1]]);
 
             x.domain(data.map(d => d['Sun Constellation']));
             const maxVal = d3.max(data, d => d.Daytime + d.Nighttime);

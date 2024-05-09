@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Define the color mappings for the eclipse types
     const colorMapping = {
-        'P': '#ebd271',  // Partial
-        'T': '#fcc203',  // Total
-        'H': '#d62728',  // Hybrid
-        'A': '#ff7f0e'   // Annular
+        'P': colors[2],  // Partial
+        'T': colors[3],  // Total
+        'H': colors[1],  // Hybrid
+        'A': colors[0]   // Annular
     };
 
     // Select the div where the legend will be placed

@@ -62,7 +62,7 @@ function drawTimeseriesPlot(timeseriesdata) {
     svg.append("path")
         .datum(avgMagnitudeData)
         .attr("fill", "none")
-        .attr("stroke", "orange")
+        .attr("stroke", colors[0])
         .attr("stroke-width", 1)
         .attr("d", line)
 
@@ -74,7 +74,7 @@ function drawTimeseriesPlot(timeseriesdata) {
         .attr("cx", d => xScale(d.Decade))
         .attr("cy", d => yScale(d.Magnitude))
         .attr("r", 5) // Increased the radius for better hover interaction
-        .attr("fill", "red")
+        .attr("fill", colors[4])
         .style("opacity", 0) // Initially hide the dots
 
     // Add labels and title

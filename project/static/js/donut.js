@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             const width = 320;
             const height = 320;
-            const margin = 20;
+            const margin = 50;
             const radius = Math.min(width, height) / 2 - margin;
             const innerRadius = radius * 0.5;
             const outerRadius = radius * 1.1;  // Extend outer radius for label placement
@@ -15,6 +15,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr("height", height)
                 .append("g")
                 .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+            svg.append("text")
+                .attr("class", "chart-title")
+                .attr("x", 0)
+                .attr("y", -(height / 2) + 25)  // Adjust the y offset to place the title appropriately
+                .attr("text-anchor", "middle")
+                .style("font-size", "12px")
+                .style("fill", "white")
+                .text("Eclipse Types");
 
             const color = d3.scaleOrdinal()
                 .domain(Object.keys(data))
@@ -73,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         return selectedTypes.includes(labelData.data[0]) ? "bold" : "normal";
                     })
                     .style("font-size", function (labelData) {
-                        return selectedTypes.includes(labelData.data[0]) ? "15px" : "12px";
+                        return selectedTypes.includes(labelData.data[0]) ? "13px" : "12px";
                     });
             });
 
@@ -98,7 +107,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr("text-anchor", "middle")
                 .text(d => `${(d.value / total * 100).toFixed(1)}%`)
                 .style("fill", "white")
-                .style("font-size", "12px");
+                .style("font-size", "12px")
+                .style("font-weight", "bold");
 
             // Legend in the center
             const legend = svg.append("g")
@@ -122,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr("y", 10)
                 .text(d => d.data[0])
                 .style("fill", "white")
-                .style("font-size", "15px");
+                .style("font-size", "13px");
         })
         .catch(error => console.error('Error:', error));
 });

@@ -21,7 +21,7 @@ function drawDonut(data) {
         .attr("x", 0)
         .attr("y", -(height / 2) + 25)  // Adjust the y offset to place the title appropriately
         .attr("text-anchor", "middle")
-        .style("font-size", "12px")
+        // .style("font-size", "12px")
         .style("fill", "white")
         .text("Eclipse Types");
 

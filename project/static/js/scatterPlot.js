@@ -109,11 +109,11 @@ function drawScatterPlot(data)
 
                 svg.append("text")
                     .attr("x", width / 2)
-                    .attr("y", height + margin.bottom - 5)
+                    .attr("y", height + margin.bottom )
                     .style("text-anchor", "middle")
                     .style("fill", "white")
                     .text(selectedX === "Sun Distance (km)" ? "Sun Distance (million km)" : selectedX)
-                    .attr("font-size", 12);
+                    // .attr("font-size", 12);
 
                 svg.append("text")
                     .attr("transform", "rotate(-90)")
@@ -123,7 +123,7 @@ function drawScatterPlot(data)
                     .style("text-anchor", "middle")
                     .style("fill", "white")
                     .text(selectedY === "Sun Distance (km)" ? "Sun Distance (million km)" : selectedY)
-                    .attr("font-size", 12);
+                    // .attr("font-size", 12);
 
 
                 // Draw legend

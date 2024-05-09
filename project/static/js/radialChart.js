@@ -26,18 +26,18 @@ function drawRadialPlot(data){
                 .attr("x", 0)
                 .attr("y", -(height / 2))  // Adjust the y offset to place the title appropriately
                 .attr("text-anchor", "middle")
-                .style("font-size", "12px")
+                // .style("font-size", "12px")
                 .style("fill", "white")
-                .text("Number of daytime/nightime");
+                .text("Constellation Frequency");
 
-            svg.append("text")
-                .attr("class", "chart-title")
-                .attr("x", 0)
-                .attr("y", -(height / 2) + 20)  // Adjust the y offset to place the title appropriately
-                .attr("text-anchor", "middle")
-                .style("font-size", "12px")
-                .style("fill", "white")
-                .text("observations per constellation");
+            // svg.append("text")
+            //     .attr("class", "chart-title")
+            //     .attr("x", 0)
+            //     .attr("y", -(height / 2) + 20)  // Adjust the y offset to place the title appropriately
+            //     .attr("text-anchor", "middle")
+            //     .style("font-size", "12px")
+            //     .style("fill", "white")
+            //     .text("observations per constellation");
 
             const x = d3.scaleBand()
                 .range([0, 2 * Math.PI])

@@ -4,17 +4,17 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             var svg = d3.select("#radialChart")
                 .append("svg")
-                .attr("width", 400)  // Responsive based on parent div
-                .attr("height", 400)  // Responsive based on parent div
+                .attr("width", 320)  // Responsive based on parent div
+                .attr("height", 320)  // Responsive based on parent div
                 //.attr("viewBox", [-width / 2, -height / 2, width, height]);  // Ensure SVG centers the chart
 
             //var width = +svg.node().getBoundingClientRect().width;
             //var height = +svg.node().getBoundingClientRect().height;
-            var width = 400;
-            var height = 400;
+            var width = 320;
+            var height = 320;
 
-            var innerRadius = 100,
-                outerRadius = Math.min(width, height) / 2 - 20;
+            var innerRadius = 90,
+                outerRadius = Math.min(width, height) / 2 -10;
 
             var x = d3.scaleBand()
                 .range([0, 2 * Math.PI])

@@ -177,4 +177,33 @@ function drawRadialPlot(data){
                 .text(d => d['Sun Constellation'].substring(0, 3).toUpperCase());
 
             yAxis.moveToFront();
+
+
+            // Define legend data
+    const legendData = [{ label: "Nighttime", color: "#bc6ceb" }, { label: "Daytime", color: "#6ceb6c" }];
+
+    // Add legend to the SVG
+    const legend = svg.append("g")
+        .attr("class", "legend")
+        .attr("transform", "translate(-150, -130)"); // Adjust the position as needed
+
+    // Create rectangles for legend categories
+    legend.selectAll("rect")
+        .data(legendData)
+        .enter().append("rect")
+        .attr("x", 0)
+        .attr("y", (d, i) => i * 20)
+        .attr("width", 10)
+        .attr("height", 10)
+        .style("fill", d => d.color);
+
+    // Add labels for legend categories
+    legend.selectAll("text")
+        .data(legendData)
+        .enter().append("text")
+        .attr("x", 15)
+        .attr("y", (d, i) => i * 20 + 9) // Adjust position to vertically center text
+        .style("font-size", "12px")
+        .style("fill", "white")
+        .text(d => d.label);
 }

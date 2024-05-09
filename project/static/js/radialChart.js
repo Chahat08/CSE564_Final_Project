@@ -1,40 +1,60 @@
 document.addEventListener('DOMContentLoaded', function () {
-    fetch('/radialChart')  // Make sure this matches the correct Flask endpoint
+    fetch('/radialChart')
         .then(response => response.json())
         .then(data => {
-            var svg = d3.select("#radialChart")
+            const width = 320;
+            const height = 320;
+            const innerRadius = 70;
+            const outerRadius = Math.min(width, height) / 2 - 30;
+            const svg = d3.select("#radialChart")
                 .append("svg")
-                .attr("width", 320)  // Responsive based on parent div
-                .attr("height", 320)  // Responsive based on parent div
-                //.attr("viewBox", [-width / 2, -height / 2, width, height]);  // Ensure SVG centers the chart
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${width / 2}, ${height / 2 + 20})`);
 
-            //var width = +svg.node().getBoundingClientRect().width;
-            //var height = +svg.node().getBoundingClientRect().height;
-            var width = 320;
-            var height = 320;
 
-            var innerRadius = 90,
-                outerRadius = Math.min(width, height) / 2 -10;
+            // Tooltip setup
+            const tooltip = d3.select("#radialChart").append("div")
+                .attr("class", "tooltipclassic")
+                .style("position", "absolute")
+                .style("visibility", "hidden");
 
-            var x = d3.scaleBand()
+            // Add title to the SVG
+            svg.append("text")
+                .attr("class", "chart-title")
+                .attr("x", 0)
+                .attr("y", -(height / 2))  // Adjust the y offset to place the title appropriately
+                .attr("text-anchor", "middle")
+                .style("font-size", "12px")
+                .style("fill", "white")
+                .text("Number of daytime/nightime");
+
+            svg.append("text")
+                .attr("class", "chart-title")
+                .attr("x", 0)
+                .attr("y", -(height / 2) + 20)  // Adjust the y offset to place the title appropriately
+                .attr("text-anchor", "middle")
+                .style("font-size", "12px")
+                .style("fill", "white")
+                .text("observations per constellation");
+
+            const x = d3.scaleBand()
                 .range([0, 2 * Math.PI])
                 .align(0);
 
-            var y = d3.scaleRadial()
+            const y = d3.scaleRadial()
                 .range([innerRadius, outerRadius]);
 
-            var z = d3.scaleOrdinal()
+            const z = d3.scaleOrdinal()
                 .range(["#ff7f0e", "#613005"]);
 
             x.domain(data.map(d => d['Sun Constellation']));
-            var maxVal = d3.max(data, d => d.Daytime + d.Nighttime);
+            const maxVal = d3.max(data, d => d.Daytime + d.Nighttime);
             y.domain([0, maxVal]);
             z.domain(['Daytime', 'Nighttime']);
 
-            var g = svg.append("g")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-            var arcs = d3.arc()
+            const arcGenerator = d3.arc()
                 .innerRadius(d => y(d[0]))
                 .outerRadius(d => y(d[1]))
                 .startAngle(d => x(d.data['Sun Constellation']))
@@ -42,21 +62,80 @@ document.addEventListener('DOMContentLoaded', function () {
                 .padAngle(0.01)
                 .padRadius(innerRadius);
 
-            var groups = g.append("g")
+            let selectedConstellations = ["Sagittarius", "Capricornus", "Aquarius", "Pisces", "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpius", "Ophiuchus", "Sagittarius"];
+
+            const layerGroups = svg.append("g")
                 .selectAll("g")
                 .data(d3.stack().keys(['Daytime', 'Nighttime'])(data))
                 .enter().append("g")
                 .attr("fill", d => z(d.key));
 
-            groups.selectAll("path")
+            const arcs = layerGroups.selectAll("path")
                 .data(d => d)
                 .enter().append("path")
-                .attr("d", arcs);
+                .attr("d", arcGenerator)
+                //.style("opacity", 0.5)
+                .on("click", function (event, d) {
+                    const constellation = d.data['Sun Constellation'];
+                    const isActive = selectedConstellations.includes(constellation);
+                    if (isActive) {
+                        selectedConstellations = selectedConstellations.filter(c => c !== constellation);
+                        svg.selectAll('path').filter(dd => dd.data['Sun Constellation'] === constellation)
+                            .transition().style("opacity", 0.5);
+                    } else {
+                        selectedConstellations.push(constellation);
+                        svg.selectAll('path').filter(dd => dd.data['Sun Constellation'] === constellation)
+                            .transition().style("opacity", 1);
+                    }
+                })
+                .style("cursor", "pointer")
+                .on("mouseover", function (event, d) {
+                    const tooltipWidth = 150; // Adjust based on your tooltip content and style
+                    const tooltipHeight = 50; // Adjust based on your tooltip content and style
+
+                    const mouseX = d3.pointer(event)[0];
+                    const mouseY = d3.pointer(event)[1];
+
+                    const mapContainer = document.getElementById("radialChart");
+                    const mapRect = mapContainer.getBoundingClientRect();
+                    const mapWidth = mapRect.width;
+                    const mapHeight = mapRect.height;
+
+                    let tooltipX = mouseX + 10; // Initial position offset
+                    let tooltipY = mouseY - 10; // Initial position offset
+
+                    // Check if tooltip exceeds map width
+                    if (tooltipX + tooltipWidth > mapWidth) {
+                        tooltipX = mapWidth - tooltipWidth - 10; // Adjusting position to stay within the map
+                    }
+
+                    // Check if tooltip exceeds map height
+                    if (tooltipY + tooltipHeight > mapHeight) {
+                        tooltipY = mapHeight - tooltipHeight - 10;
+                        // console.log(tooltipY) // Adjusting position to stay within the map
+                    }
+
+                    tooltip.style("visibility", "visible")
+                        .html(d.data['Sun Constellation'])
+                        .style("top", tooltipY + 150+ "px")
+                        .style("left", tooltipX + 150 +"px");
+                })
+                .on("mouseout", function (d) {
+                    tooltip.style("visibility", "hidden");
+                });
 
             var levels = 2;
-            var levelStep = (outerRadius - innerRadius) / (levels + 1);  
+            var levelStep = (outerRadius - innerRadius) / (levels + 1);
 
-            var yAxis = g.append("g")
+            var g = svg.select("g");
+
+            d3.selection.prototype.moveToFront = function () {
+                return this.each(function () {
+                    this.parentNode.appendChild(this);
+                });
+            };
+
+            var yAxis = g.select("g")
                 .attr("text-anchor", "middle");
 
             yAxis.selectAll('circle')
@@ -66,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr('r', d => innerRadius + levelStep * d)
                 .style('fill', 'none')
                 .style('stroke', 'white')
-                .style('stroke-opacity', 0.7)
+                .style('stroke-opacity', 1.0)
                 .style('stroke-dasharray', '2,2');
 
             yAxis.selectAll('text')
@@ -83,14 +162,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 .selectAll("text")
                 .data(data)
                 .enter().append("text")
-                .attr("transform", d => `rotate(${(x(d['Sun Constellation']) + x.bandwidth() / 2) * 180 / Math.PI - 90})translate(${innerRadius-25}, 0)`)
+                .attr("transform", d => `rotate(${(x(d['Sun Constellation']) + x.bandwidth() / 2) * 180 / Math.PI - 90})translate(${innerRadius - 20}, 0)`)
                 .attr("dy", "0.35em")
                 .attr("font-size", 10)
                 .attr("text-anchor", "middle")
                 .style("fill", "white")
-                .text(d => d['Sun Constellation']);
+                .text(d => d['Sun Constellation'].substring(0, 3).toUpperCase());
 
-            
+            yAxis.moveToFront();
+
         })
         .catch(error => console.error('Error:', error));
 });

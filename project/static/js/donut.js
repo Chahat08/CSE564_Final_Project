@@ -39,12 +39,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 .append('path')
                 .attr("stroke", "black")
                 .style("stroke-width", "3px")
-                .style("opacity", 0.5) // Initially all are partially opaque
+                .style("opacity", 1.0) // Initially all are partially opaque
                 .style("cursor", "pointer")
                 .attr('fill', d => color(d.data[0]))
-                .attr('d', arcGenerator);
+                .attr('d', arcHover);
 
-            let selectedTypes = [];
+            let selectedTypes = ["Partial", "Annular", "Total", "Hybrid"];
 
             // Interaction for clicking on segments
             arcs.on("click", function (event, d) {
@@ -109,6 +109,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 .enter().append("g")
                 .attr("transform", (d, i) => `translate(0, ${-innerRadius / 2 + i * 20})`);
 
+            
+
             legend.append("rect")
                 .attr("x", -35)
                 .attr("width", 10)
@@ -120,8 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr("y", 10)
                 .text(d => d.data[0])
                 .style("fill", "white")
-                .style("font-size", "12px");
+                .style("font-size", "15px");
         })
         .catch(error => console.error('Error:', error));
 });
-

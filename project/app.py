@@ -59,7 +59,7 @@ def timeseries_plot():
 @app.route('/radialChart')
 def sun_constellation_data():
     grouped = geodata.groupby(['Sun Constellation', 'Daytime/Nighttime']).size().unstack(fill_value=0).reset_index()
-    grouped['Sun Constellation'] = grouped['Sun Constellation'].apply(lambda x: x[:2].upper())
+    #grouped['Sun Constellation'] = grouped['Sun Constellation'].apply(lambda x: x[:2].upper())
     result = grouped.to_dict(orient='records') 
     return jsonify(result)
 

@@ -1,4 +1,4 @@
-function drawChloropleth(geodata, other) {
+function drawChloropleth(geodata) {
     // Set up the dimensions of the SVG container
     const width = 800;
     const height = 320;
@@ -159,17 +159,14 @@ function drawChloropleth(geodata, other) {
             });
 
     
-        const visible_cities = other
-        // const visible_cities = geodata.filter(row => row.Visibility !== "Not Visible");
-        const radiusScale = d3.scaleLinear()
-        .domain([d3.min(other, d => d['Eclipse Magnitude']), d3.max(other, d => d['Eclipse Magnitude'])])
-        .range([0.5, 1]);
+        //const visible_cities = other
+        const visible_cities = geodata.filter(row => row.Visibility !== "Not Visible");
 
         const points = svg.selectAll(".point")
         .data(visible_cities) // Assuming visible_cities contains the data for the points
         .enter().append("circle")
         .attr("class", "point")
-        .attr("r", d => radiusScale(d["Eclipse Magnitude"]))
+        .attr("r", 1.5)
         .attr("opacity", 1) // Adjust the radius of the circles as needed
         .attr("fill", "white")
         .attr("cx", d => projection([d["Eclipse Longitude"], d["Eclipse Latitude"]])[0])

@@ -47,7 +47,7 @@ function drawScatterPlot(data)
 
                 var radiusScale = d3.scaleSqrt()
                     .domain(d3.extent(data, d => +d['Eclipse Magnitude']))
-                    .range([0.5, 1.5]);
+                    .range([1, 1]);
 
                 var colorScale = d3.scaleOrdinal()
                     .domain(['Partial', 'Total', 'Hybrid', 'Annular'])

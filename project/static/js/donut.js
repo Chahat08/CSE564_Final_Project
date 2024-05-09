@@ -1,4 +1,6 @@
-function drawDonut(data){
+function drawDonut(data) {
+
+    d3.select("#donutChart").selectAll("*").remove();
 
     const width = 320;
     const height = 320;
@@ -51,14 +53,14 @@ function drawDonut(data){
         .attr('fill', d => color(d.data[0]))
         .attr('d', arcHover);
 
-    let selectedTypes = ["Partial", "Annular", "Total", "Hybrid"];
+    //let ec_type = ["Partial", "Annular", "Total", "Hybrid"];
 
     // Interaction for clicking on segments
     arcs.on("click", function (event, d) {
-        const index = selectedTypes.indexOf(d.data[0]);
+        const index = ec_type.indexOf(d.data[0]);
         if (index > -1) {
             // Already selected, remove it
-            selectedTypes.splice(index, 1);
+            ec_type.splice(index, 1);
             d3.select(this)
                 .transition()
                 .duration(200)
@@ -66,7 +68,7 @@ function drawDonut(data){
                 .style('opacity', 0.5);
         } else {
             // Add to selection
-            selectedTypes.push(d.data[0]);
+            ec_type.push(d.data[0]);
             d3.select(this)
                 .transition()
                 .duration(200)
@@ -77,11 +79,18 @@ function drawDonut(data){
         // Update the legend accordingly
         svg.selectAll('.legend text')
             .style("font-weight", function (labelData) {
-                return selectedTypes.includes(labelData.data[0]) ? "bold" : "normal";
+                return ec_type.includes(labelData.data[0]) ? "bold" : "normal";
             })
             .style("font-size", function (labelData) {
-                return selectedTypes.includes(labelData.data[0]) ? "13px" : "12px";
+                return ec_type.includes(labelData.data[0]) ? "13px" : "12px";
             });
+
+        fetchandRenderScatterPlot();
+        // fetchandRenderMDSPlot();
+        //fetchandRenderDonut();
+        fetchandRenderChoropleth();
+        fetchandRenderRadialPlot();
+        fetchandRenderTimeSeriesPlot();
     });
 
     // Adding text to the outer edge of the pies (percentages)

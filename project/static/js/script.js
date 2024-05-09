@@ -1,7 +1,7 @@
 var country = ""
-var ec_type = ""
+var ec_type = ["Partial", "Annular", "Total", "Hybrid"]
 var brush = []
-var constellation = ""
+var selectedConstellations = ["Sagittarius", "Capricornus", "Aquarius", "Pisces", "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpius", "Ophiuchus"]
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -30,7 +30,7 @@ function fetchandRenderChoropleth(){
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({'country' : country, 'ec_type' : ec_type, 'brush' : brush, 'constellation':constellation})
+        body: JSON.stringify({'country' : country, 'ec_type' : ec_type, 'brush' : brush, 'selectedConstellations':selectedConstellations})
     })
     .then(response => response.json())
     .then(data => {
@@ -44,7 +44,7 @@ function fetchandRenderChoropleth(){
         .then(response => response.json())
         .then(data => {
             console.log("Drawing Choropleth")
-            drawChloropleth(data.dataA, data.dataB)
+            drawChloropleth(data)
 
         }).catch(error => console.error('Error:', error));
 
@@ -57,7 +57,7 @@ function fetchandRenderScatterPlot(){
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({'country' : country, 'ec_type' : ec_type, 'brush' : brush, 'constellation':constellation})
+        body: JSON.stringify({'country' : country, 'ec_type' : ec_type, 'brush' : brush, 'selectedConstellations':selectedConstellations})
     })
     .then(response => response.json())
     .then(data => {
@@ -85,7 +85,7 @@ function fetchandRenderTimeSeriesPlot(){
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({'country' : country, 'ec_type' : ec_type, 'brush' : brush, 'constellation':constellation})
+        body: JSON.stringify({'country' : country, 'ec_type' : ec_type, 'brush' : brush, 'selectedConstellations':selectedConstellations})
     })
     .then(response => response.json())
     .then(data => {
@@ -115,7 +115,7 @@ function fetchandRenderDonut() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({'country' : country, 'ec_type' : ec_type, 'brush' : brush, 'constellation':constellation})
+        body: JSON.stringify({'country' : country, 'ec_type' : ec_type, 'brush' : brush, 'selectedConstellations':selectedConstellations})
     })
     .then(response => response.json())
     .then(data => {
@@ -142,7 +142,7 @@ function fetchandRenderRadialPlot() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({'country' : country, 'ec_type' : ec_type, 'brush' : brush, 'constellation':constellation})
+        body: JSON.stringify({'country' : country, 'ec_type' : ec_type, 'brush' : brush, 'selectedConstellations':selectedConstellations})
     })
     .then(response => response.json())
     .then(data => {
@@ -171,7 +171,7 @@ function fetchandRenderMDSPlot() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({'country' : country, 'ec_type' : ec_type, 'brush' : brush, 'constellation':constellation})
+        body: JSON.stringify({'country' : country, 'ec_type' : ec_type, 'brush' : brush, 'selectedConstellations':selectedConstellations})
     })
     .then(response => response.json())
     .then(data => {

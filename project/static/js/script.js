@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         d3.json('/reset_values').then(function (data) {
             country = data.country;
             ec_type = data.ec_type;
-            brush = data.brush;
+            selected_decades = data.selected_decades;
             selectedConstellations = data.selectedConstellations;
 
             console.log("Variables have been reset to:", data);

@@ -168,7 +168,7 @@ def mds_attr():
 default_values = {
     "country": "",
     "ec_type": ["Partial", "Annular", "Total", "Hybrid"],
-    "brush": [],
+    "selected_decades": [],
     "selectedConstellations": [
         "Sagittarius", "Capricornus", "Aquarius", "Pisces", "Aries",
         "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra",

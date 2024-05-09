@@ -53,6 +53,13 @@ def timeseries_plot():
     
     return jsonify(data_dict)
 
+@app.route('/radialChart')
+def sun_constellation_data():
+    grouped = data.groupby(['Sun Constellation', 'Daytime/Nighttime']).size().unstack(fill_value=0).reset_index()
+    grouped['Sun Constellation'] = grouped['Sun Constellation'].apply(lambda x: x[:2].upper())
+    result = grouped.to_dict(orient='records') 
+    return jsonify(result)
+
 if __name__ == '__main__':
     # serve(app, host='0.0.0.0', port=8080)
     app.run(debug=True)
